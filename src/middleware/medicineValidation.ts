@@ -1,6 +1,9 @@
 import exp from "constants"
 import { Request, Response, NextFunction} from "express"
 import Joi from "joi"
+import path from "path"
+import { ROOT_DIRECTORY } from "../config"
+import fs from "fs"
 
 /** create rule/schema */
 
@@ -19,11 +22,23 @@ const createValidation = (
 ) => {
     const validate = createScheme.validate(req.body)
     if (validate.error) {
+        /** delete current up file */
+        let fileName: string = req.file?.filename||``
+        let pathFile = path.join(ROOT_DIRECTORY, "public", "medicine-photo" ,fileName)
+
+        /** check is file extension  */
+        let fileExist = fs.existsSync(pathFile)
+
+        if(fileExist && fileName !== ``){
+            /** delete file */
+            fs.unlinkSync(pathFile)
+        }
         return res.status(400).json({
             message: validate
             .error
             .details
-            .map(item => item.message).join()
+            .map(item => item.message)
+            .join()
         })
     }
 
@@ -45,6 +60,17 @@ const updateValidation = (
 ) => {
     const validate = updateScheme.validate(req.body)
     if (validate.error) {
+         /** delete current up file */
+         let fileName: string = req.file?.filename||``
+         let pathFile = path.join(ROOT_DIRECTORY, "public", "medicine-photo" ,fileName)
+ 
+         /** check is file extension  */
+         let fileExist = fs.existsSync(pathFile)
+ 
+         if(fileExist && fileName !== ``){
+             /** delete file */
+             fs.unlinkSync(pathFile)
+         }
         return res.status(400).json({
             message: validate
             .error
@@ -71,6 +97,17 @@ const deleteValidation = (
 ) => {
     const validate = deleteScheme.validate(req.body)
     if (validate.error) {
+         /** delete current up file */
+         let fileName: string = req.file?.filename||``
+         let pathFile = path.join(ROOT_DIRECTORY, "public", "medicine-photo" ,fileName)
+ 
+         /** check is file extension  */
+         let fileExist = fs.existsSync(pathFile)
+ 
+         if(fileExist && fileName !== ``){
+             /** delete file */
+             fs.unlinkSync(pathFile)
+         }
         return res.status(400).json({
             message: validate
             .error

@@ -22,6 +22,7 @@ model medicine {
   price              Float                @default(0) @db.Double
   createdAt          DateTime             @default(now())
   updateAt           DateTime             @default(now())
+  photo              String               @default("")
   transaction_detail transaction_detail[]
 }
 
@@ -39,11 +40,20 @@ model transaction_detail {
   transaction_id   Int         @default(0)
   medicine_id      Int         @default(0)
   qty              Int         @default(0)
-  order_price      Float       @default(0)     @db.Double
+  order_price      Float       @default(0) @db.Double
   createdAt        DateTime    @default(now())
   updateAt         DateTime    @default(now()) @updatedAt
   transaction      transaction @relation(fields: [transaction_id], references: [id])
   Medicine_details medicine    @relation(fields: [medicine_id], references: [id])
+}
+
+model admin {
+  id        Int      @id @default(autoincrement())
+  username  String   @default("")
+  email     String   @unique
+  password  String   @default("")
+  createdAt DateTime @default(now())
+  updateAt  DateTime @default(now()) @updatedAt
 }
 
 enum DrugType {
