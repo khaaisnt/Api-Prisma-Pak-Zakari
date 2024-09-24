@@ -17,6 +17,12 @@ const createAdmin = async (
         const username: string = req.body.username
         const email: string = req.body.email
         const password: string = req.body.password
+
+        const findEmail = await prisma.admin.findFirst({where: {email}})
+        if (findEmail){
+            return res.status(400).json({ message: "email has exist "})
+        }
+        const hashPassword = await bcrypt.hash(password, 12)
         
         const newAdmin = await prisma.admin.create({
             data: {
