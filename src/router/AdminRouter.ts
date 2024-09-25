@@ -1,14 +1,28 @@
 import { Router } from "express";
-import {createAdmin, deleteAdmin, readAdmin, updateAdmin} from "../controller/AdminController"
-import {createValidation, updateValidation, deleteValidation} from "../middleware/Admin.validation"
+import {
+  createAdmin,
+  deleteAdmin,
+  readAdmin,
+  updateAdmin,
+  authentication,
+} from "../controller/AdminController";
+import {
+  createValidation,
+  updateValidation,
+  deleteValidation,
+  authValidation,
+} from "../middleware/adminValidation";
+import { verifyToken } from "../middleware/authorization";
 const router = Router();
 
-router.post (`/`, [createValidation], createAdmin)
+router.post(`/`, [verifyToken ,createValidation], createAdmin);
 
-router.get(`/`, readAdmin)
+router.get(`/`, [verifyToken], readAdmin);
 
-router.put(`/:id`, [updateValidation], updateAdmin)
+router.put(`/:id`, [verifyToken ,updateValidation], updateAdmin);
 
-router.delete(`/:id`, [deleteValidation], deleteAdmin)
+router.delete(`/:id`, [verifyToken ,deleteValidation], deleteAdmin);
 
-export default router
+router.post(`/auth`, [authValidation], authentication);
+
+export default router;

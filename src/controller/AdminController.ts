@@ -5,6 +5,7 @@ import path from "path";
 import fs from "fs";
 import { ROOT_DIRECTORY } from "../config";
 import bcrypt from "bcrypt"
+import jwt from "jsonwebtoken"
 
 const prisma = new PrismaClient({errorFormat:"minimal"})
 
@@ -28,7 +29,7 @@ const createAdmin = async (
             data: {
                 username,
                 email,
-                password 
+                password: hashPassword
             }
         });
 
@@ -135,4 +136,57 @@ const deleteAdmin = async (
     }
 }
 
-export { createAdmin, readAdmin, updateAdmin, deleteAdmin }
+// function for login (authentication)
+const authentication = async (
+    req: Request,
+    res: Response
+) => {
+    try {
+        const {email, password} = req.body
+
+        // checking exixting email
+        const findAdmin = await prisma.admin.findFirst({
+            where: {email}
+        })
+
+        if(!findAdmin) {
+            return res.status(200)
+            .json({
+                message: `email or password is not registered`
+            })
+        }
+
+        const isMatchPassword = await bcrypt.compare(password, findAdmin.password)
+
+        if(!isMatchPassword) {
+            return res.status(200)
+            .json({
+                message: `Invalid password`
+            })
+        }
+
+        // prepare to generate token using JWT
+        const payload = {
+            username: findAdmin.username,
+            email: findAdmin.email
+        }
+        const signature = process.env.SECRET || ``
+
+        const token = jwt.sign(payload, signature)
+
+        return res.status(200)
+        .json({
+            logged: true,
+            token,
+            id: findAdmin.id,
+            username: findAdmin.username,
+            email: findAdmin.email
+        })
+
+    } catch (error) {
+        return res.status(500)
+        .json({error})
+    }
+}
+
+export { createAdmin, readAdmin, updateAdmin, deleteAdmin, authentication }
