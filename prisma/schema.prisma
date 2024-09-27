@@ -36,15 +36,15 @@ model transaction {
 }
 
 model transaction_detail {
-  id               Int         @id @default(autoincrement())
-  transaction_id   Int         @default(0)
-  medicine_id      Int         @default(0)
-  qty              Int         @default(0)
-  order_price      Float       @default(0) @db.Double
-  createdAt        DateTime    @default(now())
-  updateAt         DateTime    @default(now()) @updatedAt
-  transaction      transaction @relation(fields: [transaction_id], references: [id])
-  Medicine_details medicine    @relation(fields: [medicine_id], references: [id])
+  id                      Int         @id @default(autoincrement())
+  transaction_id          Int         @default(0)
+  medicine_id             Int         @default(0)
+  qty                     Int         @default(0)
+  order_price             Float       @default(0) @db.Double
+  createdAt               DateTime    @default(now())
+  updateAt                DateTime    @default(now()) @updatedAt
+  transaction_detail      transaction @relation(fields: [transaction_id], references: [id])
+  medicine_details        medicine    @relation(fields: [medicine_id], references: [id])
 }
 
 model admin {
