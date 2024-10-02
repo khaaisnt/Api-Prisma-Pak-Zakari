@@ -7,9 +7,9 @@ const router = Router();
 
 router.post(`/`, [verifyToken ,uploadMedicinePhoto.single('photo'), createValidation], createMedicine)
 
-router.get(`/`, [verifyToken],readMedicine)
+router.get(`/`,readMedicine)
 
-router.put(`/:id`, [verifyToken],[uploadMedicinePhoto.single(`photo`),updateValidation], UpdateMedicine)
+router.put(`/:id`,[verifyToken], [uploadMedicinePhoto.single(`photo`),updateValidation], UpdateMedicine)
 
 router.delete(`/:id`, [verifyToken],[deleteMedicine], deleteMedicine)
 

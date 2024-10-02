@@ -6,13 +6,12 @@ import { ROOT_DIRECTORY } from "../config"
 import fs from "fs"
 
 /** create rule/schema */
-
 const createScheme = Joi.object({
     name: Joi.string().required(),
     stock: Joi.number().min(0).required(),
     exp_date: Joi.date().required(),
     price: Joi.number().min(1).required(),
-    type: Joi.string().valid("Syrup", "tablet", "powder").required()
+    type: Joi.string().valid("Syrup", "Tablet", "powder").required()
 })
 
 const createValidation = (

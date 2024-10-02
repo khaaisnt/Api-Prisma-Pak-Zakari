@@ -13,7 +13,7 @@ const createSchema = Joi.object({
 })
 
 const createValidation = (req: Request, res: Response, next: NextFunction) => {
-    const validate = createSchema.validate(req.body, {abortEarly: false})
+    const validate = createSchema.validate(req.body)
     if(validate.error){
         return res.status(400).json({
             message: validate.error.details.map(item => item.message).join(", ")
@@ -22,4 +22,20 @@ const createValidation = (req: Request, res: Response, next: NextFunction) => {
     return next()
 }
 
-export { createValidation }
+const updateSchema = Joi.object({
+    cashier_name: Joi.string().optional(),
+    order_date: Joi.date().optional(),
+    transaction_detail: Joi.array().items(detailSchema).min(1).optional()
+})
+
+const updateValidation = (req: Request, res: Response, next: NextFunction) => {
+    const validate = updateSchema.validate(req.body, {abortEarly: false})
+    if(validate.error){
+        return res.status(400).json({
+            message: validate.error.details.map(item => item.message).join(", ")
+        })
+    }
+    return next()
+}
+
+export { createValidation, updateValidation }
